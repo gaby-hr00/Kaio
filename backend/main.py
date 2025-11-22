@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from controllers.categoria_controller import router as categoria_router
 from controllers.producto_controller import router as producto_router
 from controllers.usuario_controller import router as usuario_router
+from controllers.auth_controller import router as auth_router
 from controllers.rol_controller import router as rol_router
 from controllers.inventario_controller import router as inventario_router
 from controllers.pedido_controller import router as pedido_router
@@ -96,6 +97,7 @@ async def add_security_headers(request, call_next):
 app.include_router(categoria_router)
 app.include_router(producto_router)
 app.include_router(usuario_router)
+app.include_router(auth_router)
 app.include_router(rol_router)
 app.include_router(inventario_router)
 app.include_router(pedido_router)

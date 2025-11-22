@@ -23,6 +23,26 @@ def crear_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     plain = data.pop("contrasena", None)
     if plain:
         data["hashed_password"] = get_password_hash(plain)
+
+    # prevent duplicates
+    correo = data.get("correo")
+    if correo:
+        existing = db.query(Usuario).filter(Usuario.correo == correo).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Correo ya registrado")
+
+    identificacion = data.get("identificacion")
+    if identificacion:
+        existing = db.query(Usuario).filter(Usuario.identificacion == identificacion).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Identificación ya registrada")
+
+    celular = data.get("celular")
+    if celular:
+        existing = db.query(Usuario).filter(Usuario.celular == celular).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Celular ya registrado")
+
     db_usuario = Usuario(**data)
     db.add(db_usuario)
     db.commit()

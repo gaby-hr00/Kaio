@@ -17,6 +17,7 @@ class UsuarioBase(BaseModel):
 
 
 class UsuarioCreate(UsuarioBase):
+    correo: EmailStr
     contrasena: str
 
 
@@ -27,6 +28,14 @@ class UsuarioUpdate(UsuarioBase):
 
 class UsuarioOut(UsuarioBase):
     id: int
+    model_config = {"from_attributes": True}
 
-    class Config:
-        from_attributes = True
+
+class UsuarioLogin(BaseModel):
+    correo: EmailStr
+    contrasena: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"

@@ -1,0 +1,30 @@
+meta {
+  name: Register Usuario
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8000/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre_completo": "Juan Perez",
+    "tipo_identificacion": "CC",
+    "identificacion": "1098765432",
+    "fecha_nacimiento": "1995-06-15",
+    "contrasena": "Josthin_10",
+    "correo": "juan@example.com",
+    "estado": 1,
+    "celular": "3001234567",
+    "foto_perfil": "https://bucket-imagenes.com/usuarios/juan_perez.jpg",
+    "direccion": "Calle Falsa 123, Ciudad"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
