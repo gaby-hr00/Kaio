@@ -6,10 +6,11 @@ from datetime import timedelta
 import os
 
 from db.session import SessionLocal
-from dtos.usuario_dto import UsuarioCreate, UsuarioLogin, UsuarioOut, Token
+from dtos.usuario_dto import UsuarioCreate, UsuarioLogin, UsuarioOut, Token, RecuperarContrasena, RecuperarContrasenaResponse
 from models.usuario import Usuario
 from utils.security import get_password_hash, verify_password, create_access_token
 from utils.auth import get_current_user
+from utils.email import send_recovery_email, generate_temp_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -82,3 +83,46 @@ def token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.get("/me", response_model=UsuarioOut)
 def me(current_user: Usuario = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/recuperar-contrasena", response_model=RecuperarContrasenaResponse)
+def recuperar_contrasena(data: RecuperarContrasena, db: Session = Depends(get_db)):
+    """
+    Endpoint para recuperar contraseña.
+    Envía una contraseña temporal al email del usuario si existe en la base de datos.
+    
+    El usuario deberá cambiar esta contraseña temporal en su panel después de iniciar sesión.
+    """
+    # Verificar si el usuario existe
+    usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
+    
+    if not usuario:
+        # No revelar si el email existe o no por seguridad
+        raise HTTPException(
+            status_code=404,
+            detail="No encontramos una cuenta con ese correo"
+        )
+    
+    # Generar contraseña temporal
+    temp_password = generate_temp_password(8)
+    
+    # Hashear la contraseña temporal
+    hashed_temp_password = get_password_hash(temp_password)
+    
+    # Actualizar contraseña en la base de datos
+    usuario.hashed_password = hashed_temp_password
+    db.commit()
+    
+    # Enviar email con la contraseña temporal
+    email_sent = send_recovery_email(usuario.correo, temp_password)
+    
+    if not email_sent:
+        raise HTTPException(
+            status_code=500,
+            detail="Error al enviar el email. Por favor, intenta más tarde."
+        )
+    
+    return {
+        "message": "Se ha enviado una contraseña temporal a tu correo. Por favor, revisa tu bandeja de entrada.",
+        "success": True
+    }

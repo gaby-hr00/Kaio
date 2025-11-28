@@ -1,8 +1,8 @@
-"""Initial migration
+"""subo final
 
-Revision ID: 4483415bc03d
+Revision ID: 117c079ae018
 Revises: 
-Create Date: 2025-11-21 21:02:25.472320
+Create Date: 2025-11-28 15:19:52.218961
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4483415bc03d'
+revision: str = '117c079ae018'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -70,6 +70,9 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['rol_id'], ['roles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_usuarios_celular'), 'usuarios', ['celular'], unique=True)
+    op.create_index(op.f('ix_usuarios_correo'), 'usuarios', ['correo'], unique=True)
+    op.create_index(op.f('ix_usuarios_identificacion'), 'usuarios', ['identificacion'], unique=True)
     op.create_table('carritos',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('usuario_id', sa.Integer(), nullable=True),
@@ -143,6 +146,9 @@ def downgrade() -> None:
     op.drop_table('inventarios')
     op.drop_table('favoritos')
     op.drop_table('carritos')
+    op.drop_index(op.f('ix_usuarios_identificacion'), table_name='usuarios')
+    op.drop_index(op.f('ix_usuarios_correo'), table_name='usuarios')
+    op.drop_index(op.f('ix_usuarios_celular'), table_name='usuarios')
     op.drop_table('usuarios')
     op.drop_table('productos')
     op.drop_table('roles')
