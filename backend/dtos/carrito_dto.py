@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-
+from dtos.producto_dto import ProductoOut
 
 class CarritoBase(BaseModel):
     usuario_id: int
@@ -18,6 +18,7 @@ class CarritoUpdate(CarritoBase):
 
 class CarritoOut(CarritoBase):
     id: int
+    producto: ProductoOut  # 🔥 el producto completo gracias al JOIN
 
     class Config:
         from_attributes = True

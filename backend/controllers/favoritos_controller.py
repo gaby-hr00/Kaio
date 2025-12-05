@@ -58,3 +58,34 @@ def eliminar_favorito(fav_id: int, db: Session = Depends(get_db)):
     db.delete(fav)
     db.commit()
     return {"ok": True}
+
+from dtos.favoritos_dto import FavoritoToggle
+
+@router.post("/toggle")
+def toggle_favorito(data: FavoritoToggle, db: Session = Depends(get_db)):
+    fav_existente = (
+        db.query(Favorito)
+        .filter(
+            Favorito.usuario_id == data.usuario_id,
+            Favorito.producto_id == data.producto_id,
+        )
+        .first()
+    )
+
+    # Si ya existe → eliminar
+    if fav_existente:
+        db.delete(fav_existente)
+        db.commit()
+        return {"isFavorite": False, "message": "Eliminado de favoritos"}
+
+    # Si no existe → crear
+    nuevo_fav = Favorito(
+        usuario_id=data.usuario_id,
+        producto_id=data.producto_id
+    )
+    db.add(nuevo_fav)
+    db.commit()
+    db.refresh(nuevo_fav)
+
+    return {"isFavorite": True, "message": "Añadido a favoritos"}
+

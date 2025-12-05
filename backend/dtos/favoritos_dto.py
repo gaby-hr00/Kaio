@@ -20,3 +20,7 @@ class FavoritoOut(FavoritoBase):
 
     class Config:
         from_attributes = True
+
+class FavoritoToggle(BaseModel):
+    usuario_id: int
+    producto_id: int
