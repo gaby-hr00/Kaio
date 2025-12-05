@@ -39,3 +39,12 @@ class UsuarioLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class RecuperarContrasena(BaseModel):
+    correo: EmailStr
+
+
+class RecuperarContrasenaResponse(BaseModel):
+    message: str
+    success: bool

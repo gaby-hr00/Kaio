@@ -1,0 +1,22 @@
+meta {
+  name: recuperar contraseña com token
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8000/auth/recuperar-contrasena
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "correo": "josthinpaz2@gmail.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
