@@ -1,0 +1,39 @@
+{
+  "version": "1",
+  "name": "ENDPOINTS",
+  "type": "collection",
+  "requests": [
+    {
+      "name": "Register User",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/auth/register",
+      "headers": { "Content-Type": "application/json" },
+      "body": {
+        "nombre_completo": "Juan Perez",
+        "correo": "juan@example.com",
+        "contrasena": "MiPassword123"
+      }
+    },
+    {
+      "name": "Login (JSON)",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/auth/login",
+      "headers": { "Content-Type": "application/json" },
+      "body": { "correo": "juan@example.com", "contrasena": "MiPassword123" }
+    },
+    {
+      "name": "Token (form)",
+      "method": "POST",
+      "url": "http://127.0.0.1:8000/auth/token",
+      "headers": { "Content-Type": "application/x-www-form-urlencoded" },
+      "body_form": { "username": "juan@example.com", "password": "MiPassword123" }
+    },
+    {
+      "name": "Me (protected)",
+      "method": "GET",
+      "url": "http://127.0.0.1:8000/auth/me",
+      "headers": { "Authorization": "Bearer <TOKEN>" }
+    }
+  ],
+  "ignore": ["node_modules", ".git"]
+}
